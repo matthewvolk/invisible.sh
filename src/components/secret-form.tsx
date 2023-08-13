@@ -17,6 +17,7 @@ import {
 } from "@/components/atomic/form";
 import { Input } from "@/components/atomic/input";
 import { Text } from "@/components/atomic/textarea";
+import { env } from "@/lib/env.mjs";
 import { cs } from "@/utils/cs";
 
 export const CopyLink = ({ link }: { link: string }) => {
@@ -57,8 +58,14 @@ export const SecretForm = ({ id }: SecretFormProps) => {
   });
 
   const onSubmit = useCallback(
-    (data: z.infer<typeof SecretFormSchema>) => {
-      router.push(`/?success=true&id=${data.secret}`);
+    async (data: z.infer<typeof SecretFormSchema>) => {
+      const response = await fetch("/api/encrypt", {
+        method: "POST",
+        body: JSON.stringify({ secret: data.secret }),
+      });
+      const { uuid } = await response.json();
+
+      router.push(`/?success=true&id=${uuid}`);
       form.reset();
     },
     [form, router],
@@ -82,10 +89,11 @@ export const SecretForm = ({ id }: SecretFormProps) => {
     };
   }, [textareaElement, form, onSubmit]);
 
+  const SITE_URL =
+    env.NEXT_PUBLIC_SITE_URL || `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`;
+
   if (id) {
-    return (
-      <CopyLink link={`http://localhost:3000/${decodeURIComponent(id)}`} />
-    );
+    return <CopyLink link={`${SITE_URL}/${decodeURIComponent(id)}`} />;
   }
 
   return (
