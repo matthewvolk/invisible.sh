@@ -9,7 +9,7 @@ const server = z.object({
 
 const client = z.object(
   /** @satisfies {Record<`NEXT_PUBLIC_${string}`, import('zod').ZodType>} */ ({
-    NEXT_PUBLIC_SITE_URL: z.string().url().optional(),
+    NEXT_PUBLIC_SITE_URL: z.string().min(1).optional(),
   }),
 );
 
