@@ -16,7 +16,7 @@ const Home = async ({ searchParams }: { searchParams: { id: string } }) => {
     <section className="flex-grow">
       <div className="mt-12 justify-center text-center">
         <Badge variant="outline" className="text-muted-foreground">
-          Secured with 256-bit AES-GCM quantum-resistant encryption!
+          Secured with 256-bit AES-GCM encryption!
           <span className="ml-2">
             <LockClosedIcon />
           </span>
