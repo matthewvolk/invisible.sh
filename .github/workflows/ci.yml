@@ -38,4 +38,4 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - run: pnpm run lint
+      - run: SKIP_ENV_VALIDATION=true pnpm run lint
