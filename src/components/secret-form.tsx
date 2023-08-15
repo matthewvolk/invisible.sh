@@ -1,12 +1,13 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { CheckIcon, ClipboardIcon, UpdateIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-import { Button } from "@/components/atomic/button";
+import { Button, buttonVariants } from "@/components/atomic/button";
 import {
   Form,
   FormControl,
@@ -22,17 +23,34 @@ import { cs } from "@/utils/cs";
 
 export const CopyLink = ({ link }: { link: string }) => {
   const [buttonText, setButtonText] = useState("Copy Link");
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
-    <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-6 py-2 md:flex-row md:gap-4 md:p-6">
-      <Input value={link} readOnly className="h-full px-4 py-3 text-lg" />
+    <div className="mx-auto flex max-w-5xl flex-col items-center gap-6 px-6 py-2 md:gap-10 md:p-6">
+      <Input
+        value={link}
+        readOnly
+        className="h-full px-4 py-3 text-lg text-muted-foreground"
+        onFocus={(e) => e.target.select()}
+        ref={inputRef}
+      />
       <Button
-        className="h-full w-36 py-2.5 text-lg"
+        className={cs(
+          buttonVariants({ size: "lg" }),
+          "px-4 text-base",
+          buttonText === "Copied!" &&
+            "text-white dark:bg-neutral-800 dark:hover:bg-neutral-800",
+        )}
         onClick={() => {
           navigator.clipboard.writeText(link);
           setButtonText("Copied!");
+          inputRef.current?.focus();
         }}
       >
+        {buttonText === "Copy Link" && (
+          <ClipboardIcon className="mr-2 h-5 w-5" />
+        )}
+        {buttonText === "Copied!" && <CheckIcon className="mr-2 h-6 w-6" />}
         {buttonText}
       </Button>
     </div>
@@ -101,7 +119,7 @@ export const SecretForm = ({ id }: SecretFormProps) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="mx-auto flex max-w-5xl flex-col space-y-6 px-8 md:space-y-10"
+          className="mx-auto flex max-w-5xl flex-col gap-4 px-8"
         >
           <FormField
             control={form.control}
@@ -122,12 +140,31 @@ export const SecretForm = ({ id }: SecretFormProps) => {
                     ref={textareaRef}
                   />
                 </FormControl>
-                <FormMessage />
+                <div className="min-h-[20px]">
+                  <FormMessage />
+                </div>
               </FormItem>
             )}
           />
-          <Button type="submit" className="mx-auto h-12 text-lg lg:w-1/4">
-            Generate Secret URL
+          <Button
+            type="submit"
+            disabled={
+              Object.keys(form.formState.errors).length > 0 ||
+              form.formState.isSubmitting
+            }
+            className={cs(
+              buttonVariants({ size: "lg" }),
+              "w-auto self-center text-base",
+            )}
+          >
+            {form.formState.isSubmitting ? (
+              <div className="flex animate-pulse items-center">
+                <UpdateIcon className="mr-2 h-4 w-4 animate-spin" />
+                Encrypting...
+              </div>
+            ) : (
+              "Generate Secret URL"
+            )}
           </Button>
         </form>
       </Form>
