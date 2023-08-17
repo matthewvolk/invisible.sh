@@ -22,12 +22,14 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => (
   <html lang="en">
     <body className={inter.className}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <main className="mx-auto flex min-h-screen flex-col">
-          <header className="container flex items-center justify-between p-4">
-            <Link href="/" className="text-lg font-bold tracking-wide">
-              Invisible.sh
-            </Link>
-            <ThemeToggle />
+        <main className="relative mx-auto min-h-screen">
+          <header className="sticky top-0 border-b bg-white/50 backdrop-blur-sm backdrop-saturate-200 dark:bg-black/50">
+            <div className="container flex items-center justify-between px-4 py-3 md:p-4">
+              <Link href="/" className="font-bold tracking-wide md:text-lg">
+                Invisible.sh
+              </Link>
+              <ThemeToggle />
+            </div>
           </header>
           {children}
           <footer className="mb-8 mt-24">
